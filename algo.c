@@ -31,7 +31,7 @@ void build_graph(Graph *head, char *choice) {
     }
 
     while (*choice != NEW_GRAPH && *choice != NEW_NODE && *choice != SHORTEST_PATH 
-        && *choice != SHORTEST_PATH_NODE && *choice != DELETE_NODE && *choice != END) {
+        && *choice != SHORTEST_PATH_NODE && *choice != DELETE_NODE && *choice != END && *choice != CHAR_NULL) {
 
         *choice = fgetc(stdin); 
         space = fgetc(stdin);
@@ -41,9 +41,9 @@ void build_graph(Graph *head, char *choice) {
         }
         *choice = fgetc(stdin); 
         if(*choice == INSERT_NEW_NODE || *choice == NEW_GRAPH || *choice == NEW_NODE 
-            || *choice == SHORTEST_PATH || *choice == SHORTEST_PATH_NODE || *choice == DELETE_NODE || *choice == END) {
+            || *choice == SHORTEST_PATH || *choice == SHORTEST_PATH_NODE || *choice == DELETE_NODE || *choice == END || *choice == CHAR_NULL) {
             head = temp;
-            if(*choice != END) space = fgetc(stdin);
+            if(*choice != END && *choice != CHAR_NULL) space = fgetc(stdin);
             break;
         }
         space = fgetc(stdin);
@@ -58,7 +58,7 @@ void insert_node(Graph *head, Graph *node, char *choice) {
     Graph * temp2 = head;
     char space;
     while(*choice != INSERT_NEW_NODE && *choice != NEW_GRAPH && *choice != NEW_NODE  
-        && *choice != SHORTEST_PATH && *choice != SHORTEST_PATH_NODE && *choice != DELETE_NODE && *choice != END) {
+        && *choice != SHORTEST_PATH && *choice != SHORTEST_PATH_NODE && *choice != DELETE_NODE && *choice != END && *choice != CHAR_NULL) {
 
         while(temp2 != NULL) {
             if(temp2->node.number == *choice - '0') break;
@@ -69,18 +69,23 @@ void insert_node(Graph *head, Graph *node, char *choice) {
 
         *choice = fgetc(stdin);
         space = fgetc(stdin);
+        
         node->edges->weight = *choice - '0';
- 
+        
         
         if(space == END) {
             *choice = END;
             break;
         }
+        else if(space == CHAR_NULL) {
+            *choice = CHAR_NULL;
+            break;
+        }
         *choice = fgetc(stdin);
         space = fgetc(stdin);
         if(*choice == INSERT_NEW_NODE || *choice == NEW_GRAPH || *choice == NEW_NODE 
-            || *choice == SHORTEST_PATH || *choice == SHORTEST_PATH_NODE || *choice == DELETE_NODE || *choice == END) {
-
+            || *choice == SHORTEST_PATH || *choice == SHORTEST_PATH_NODE || *choice == DELETE_NODE || *choice == END || *choice == CHAR_NULL) {
+            node->edges->next = NULL;
             break;
         }
 
@@ -90,37 +95,37 @@ void insert_node(Graph *head, Graph *node, char *choice) {
     node->edges = temp1;
 }
 
-void new_node(Graph *head, char *choice) {
-    Graph *temp = head;
+Graph* new_node(Graph **head, char *choice) {
+    Graph *temp = *head, *ttemp = temp;
     *choice = fgetc(stdin);
     char space = fgetc(stdin);
-    if(space == END) return;
+    if(space == END || space == CHAR_NULL) return ttemp;
      
-    while(head != NULL) {
-        if(head->node.number == *choice - '0') {
-            head->edges = deleteEdges(head);
-            head->edges = (Edge*)malloc(sizeof(Edge));
+    while(temp != NULL) {
+        if(temp->node.number == *choice - '0') {
+            temp->edges = deleteEdges(temp);
             break;
         }
-        if(head->next == NULL) {
-            head->next = (Graph*)malloc(sizeof(Graph));
-            head = head->next;
-            head->node.number = *choice - '0';
-            head->edges = (Edge*)malloc(sizeof(Edge));
+        if(temp->next == NULL) {
+            temp->next = (Graph*)malloc(sizeof(Graph));
+            temp = temp->next;
+            temp->node.number = *choice - '0';
+            temp->edges = NULL;
             break;
         }
-        head = head->next;
+        temp = temp->next;
     }
     *choice = fgetc(stdin); 
+    
     if(*choice == INSERT_NEW_NODE || *choice == NEW_GRAPH || *choice == NEW_NODE 
         || *choice == SHORTEST_PATH || *choice == SHORTEST_PATH_NODE || *choice == DELETE_NODE) {
-        head = temp;
         space = fgetc(stdin);
-        return;
+        return ttemp;
     }
     space = fgetc(stdin);
-    insert_node(temp, head, choice);
-    head = temp;
+    temp->edges = (Edge*)malloc(sizeof(Edge));
+    insert_node(ttemp, temp, choice);
+    return ttemp;
 }
 
 Graph* deleteNode(Graph * head, char *choice) {
@@ -169,7 +174,7 @@ Graph* deleteNode(Graph * head, char *choice) {
     }
     head = temp;
 
-    if(space == END) {
+    if(space == END || space == CHAR_NULL) {
         *choice = END;
         return head;
     }
@@ -347,7 +352,8 @@ void TSP(Graph *head, char * choice) {
         int* p = permutation[i];
         free(p);
     }
-    if(*choice == END) return;
+    if(*choice == END || *choice == CHAR_NULL) return;
+    else if( space == END || space == CHAR_NULL) return;
     *choice = fgetc(stdin);
     space = fgetc(stdin);
 }

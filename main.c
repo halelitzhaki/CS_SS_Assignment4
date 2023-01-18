@@ -3,7 +3,7 @@
 int main () {
     char choice = fgetc(stdin), u = fgetc(stdin), v;
     Graph * head = NULL, *temp = NULL;
-    while(choice != END) {
+    while(choice != END && choice != CHAR_NULL) {
         switch (choice) {
             case NEW_GRAPH:
                 if(head != NULL) head = deleteGraph(&head);
@@ -12,7 +12,8 @@ int main () {
                 build_graph(head, &choice);
                 break;
             case NEW_NODE:
-                new_node(head, &choice);
+                head = new_node(&head, &choice);
+                temp = head;
                 break;
             case DELETE_NODE:
                 temp = deleteNode(head, &choice);
@@ -24,12 +25,12 @@ int main () {
                 space = fgetc(stdin);
 
                 printf("Dijsktra shortest path: %d\n", shortestPath(head, u, v));
-                if(space == END) {
+                if(space == END || space == CHAR_NULL) {
                     choice = space;
                     break;
                 }
                 choice = fgetc(stdin);
-                if(choice == END) break;
+                if(choice == END || choice == CHAR_NULL) break;
                 space = fgetc(stdin);
                 break;
             case SHORTEST_PATH_NODE:

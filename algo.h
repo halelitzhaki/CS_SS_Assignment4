@@ -10,6 +10,7 @@
 #define DELETE_NODE 'D'
 #define END '\n'
 #define INSERT_NEW_NODE 'n'
+#define CHAR_NULL '\0'
 #define NOT_FOUND -1
 #define TRUE 1
 #define FALSE 0
@@ -25,7 +26,7 @@ typedef struct Graph
 
 void build_graph(Graph *head, char *choice);
 void insert_node(Graph *head, Graph *node, char *choice);
-void new_node(Graph *head, char *choice);
+Graph* new_node(Graph **head, char *choice);
 Graph* deleteNode(Graph * head, char *choice);
 Edge* deleteEdges(Graph *head);
 void printGraph(Graph *head); 
