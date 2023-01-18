@@ -1,7 +1,7 @@
 #include "algo.h"
 
 int main () {
-    char choice = fgetc(stdin), u = fgetc(stdin), v;
+    char choice = fgetc(stdin), u = fgetc(stdin), v = '\0';
     Graph * head = NULL, *temp = NULL, **pHead = NULL;
     while(choice != END && choice != CHAR_NULL) {
         switch (choice) {
