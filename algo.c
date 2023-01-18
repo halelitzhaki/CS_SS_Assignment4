@@ -7,6 +7,7 @@ void build_graph(Graph *head, char *choice) {
     for(int i = 0; i < *choice - '0'; i++) {
         head->node.number = i;
         head->visited = FALSE;
+        head->edges = NULL;
         if(i == (*choice - '0') - 1) {
             head->next = NULL;
             break;
@@ -48,6 +49,8 @@ void build_graph(Graph *head, char *choice) {
         }
         space = fgetc(stdin);
         head->edges = (Edge*)malloc(sizeof(Edge));
+        head->edges->dst = NULL;
+        head->edges->next = NULL;
         insert_node(temp, head, choice);
         head = temp;
     }
@@ -91,6 +94,8 @@ void insert_node(Graph *head, Graph *node, char *choice) {
 
         node->edges->next = (Edge*)malloc(sizeof(Edge));
         node->edges = node->edges->next;
+        node->edges->dst = NULL;
+        node->edges->next = NULL;
     }
     node->edges = temp1;
 }
@@ -309,7 +314,7 @@ Edge* isFound(Edge * edge, int dst) {
 void TSP(Graph *head, char * choice) {
     *choice = fgetc(stdin);
     char space = fgetc(stdin);
-    int len = *choice - '0', nodes[len], **permutation, paths[fact(len)], min = INFINITY, count = 0;
+    int len = *choice - '0', nodes[len], **permutation = NULL, paths[fact(len)], min = INFINITY, count = 0;
     Graph * headTemp = head;
 
     for(int i = 0; i < len; i++) {
@@ -322,7 +327,7 @@ void TSP(Graph *head, char * choice) {
 
     permutation = (int**)malloc(fact(len) * sizeof(int*));
     for(int i = 0; i < fact(len); i++) {
-        for(int j = 0; j < len; j++) permutation[i] = (int*)malloc(len*sizeof(int));
+        *(permutation+i) = (int*)malloc(len*sizeof(int));
     }
     permutation = permute(permutation, nodes, 0, len - 1, &count);
 
@@ -349,9 +354,9 @@ void TSP(Graph *head, char * choice) {
     printf("TSP shortest path: %d ", min);
     head = headTemp;
     for (int i = 0; i < fact(len); i++) {
-        int* p = permutation[i];
-        free(p);
+        free(permutation[i]);
     }
+    free(permutation);
     if(*choice == END || *choice == CHAR_NULL) return;
     else if( space == END || space == CHAR_NULL) return;
     *choice = fgetc(stdin);
