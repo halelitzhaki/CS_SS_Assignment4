@@ -346,7 +346,7 @@ void TSP(Graph *head, char * choice) {
     }
 
     if(min >= INFINITY) min = NOT_FOUND;
-    printf("TSP shortest path: %d\n", min);
+    printf("TSP shortest path: %d ", min);
     head = headTemp;
     for (int i = 0; i < fact(len); i++) {
         int* p = permutation[i];
