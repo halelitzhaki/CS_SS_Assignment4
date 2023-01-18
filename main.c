@@ -2,20 +2,21 @@
 
 int main () {
     char choice = fgetc(stdin), u = fgetc(stdin), v;
-    Graph * head = NULL, *temp = NULL;
+    Graph * head = NULL, *temp = NULL, **pHead = NULL;
     while(choice != END && choice != CHAR_NULL) {
         switch (choice) {
             case NEW_GRAPH:
-                if(head != NULL) head = deleteGraph(&head);
+                if(head != NULL) head = deleteGraph(pHead);
                 head = (Graph*)malloc(sizeof(Graph));
                 temp = head;
                 build_graph(head, &choice);
                 break;
             case NEW_NODE:
-                head = new_node(&head, &choice);
+                head = new_node(pHead, &choice);
                 temp = head;
                 break;
             case DELETE_NODE:
+                if(head == NULL) break;
                 temp = deleteNode(head, &choice);
                 break;
             case SHORTEST_PATH:
@@ -41,9 +42,9 @@ int main () {
             default:
                 break;
         }
-        
         head = temp;
+        pHead = &head;
     }
-    head = deleteGraph(&head);
+    head = deleteGraph(pHead);
     return 0;
 }

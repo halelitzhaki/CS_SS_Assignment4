@@ -109,6 +109,7 @@ Graph* new_node(Graph **head, char *choice) {
     while(temp != NULL) {
         if(temp->node.number == *choice - '0') {
             temp->edges = deleteEdges(temp);
+            temp->visited = FALSE;
             break;
         }
         if(temp->next == NULL) {
@@ -116,6 +117,8 @@ Graph* new_node(Graph **head, char *choice) {
             temp = temp->next;
             temp->node.number = *choice - '0';
             temp->edges = NULL;
+            temp->next = NULL;
+            temp->visited = FALSE;
             break;
         }
         temp = temp->next;
@@ -192,6 +195,8 @@ Edge* deleteEdges(Graph *head) {
     Edge ** pEdge = &head->edges, *temp = head->edges, *next = NULL;
     while(temp != NULL) {
         next = temp->next;
+        temp->next = NULL;
+        temp->dst = NULL;
         free(temp);
         temp = next;
     }
@@ -200,7 +205,8 @@ Edge* deleteEdges(Graph *head) {
 }
 
 Graph* deleteGraph(Graph** head) {
-    Graph *temp = *head, *next = NULL;
+    Graph *temp = NULL, *next = NULL;
+    if(*head != NULL) temp = *head;
     while(temp != NULL) {
         temp->edges = deleteEdges(temp);
         next = temp->next;
@@ -228,7 +234,8 @@ void printGraph(Graph * head) {
 
 int shortestPath(Graph * head, char u, char v) {
     int minWeight = 0, minWeightFound = 0, found = FALSE;
-    Graph * temp = head;
+    Graph * temp = NULL;
+    temp = head;
 
     if(u == v) return minWeight;
     else {
@@ -314,7 +321,7 @@ Edge* isFound(Edge * edge, int dst) {
 void TSP(Graph *head, char * choice) {
     *choice = fgetc(stdin);
     char space = fgetc(stdin);
-    int len = *choice - '0', nodes[len], **permutation = NULL, paths[fact(len)], min = INFINITY, count = 0;
+    int len = *choice - '0', nodes[len], **permutation = NULL, paths[fact(len)], min = INFINITY, count = 0, path = 0;
     Graph * headTemp = head;
 
     for(int i = 0; i < len; i++) {
@@ -335,7 +342,7 @@ void TSP(Graph *head, char * choice) {
         int src = 0, dst = 1;
         paths[i] = 0;
         while(dst < len) {
-            int path = shortestPath(head, permutation[i][src] + '0', permutation[i][dst] + '0');
+            path = shortestPath(head, permutation[i][src] + '0', permutation[i][dst] + '0');
             if(path == NOT_FOUND || path == 0) {
                     paths[i] = INFINITY;
                     break;
