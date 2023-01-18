@@ -25,7 +25,7 @@ int main () {
                 v = fgetc(stdin); //dst
                 space = fgetc(stdin);
 
-                printf("Dijsktra shortest path: %d ", shortestPath(head, u, v));
+                printf("Dijsktra shortest path: %d \n", shortestPath(head, u, v));
                 if(space == END || space == CHAR_NULL) {
                     choice = space;
                     break;
