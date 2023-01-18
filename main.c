@@ -32,14 +32,16 @@ int main () {
                 choice = fgetc(stdin);
                 if(choice == END || choice == CHAR_NULL) break;
                 space = fgetc(stdin);
+                if(choice != END || choice != CHAR_NULL || space != END || space != CHAR_NULL) printf("\n");
                 break;
             case SHORTEST_PATH_NODE:
                 TSP(head, &choice);
+                if(choice != END || choice != CHAR_NULL) printf("\n");
                 break;
             default:
                 break;
         }
-        if(choice != END || choice != CHAR_NULL) printf("\n");
+        
         head = temp;
     }
     head = deleteGraph(&head);
